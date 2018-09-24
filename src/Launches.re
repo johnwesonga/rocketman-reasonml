@@ -21,7 +21,7 @@ and location = {
 type state =
   | Loading
   | Failure
-  | Success(array(launchpad));
+  | Success(list(launchpad));
 
 module Decode = {
   let location = json =>
@@ -44,8 +44,8 @@ module Decode = {
     };
 
   /*let launchpads = json => json |> Json.Decode.array(launchpad);*/
-  let launchpads = json: array(launchpad) =>
-    Json.Decode.array(launchpad, json);
+  let launchpads = json: list(launchpad) =>
+    Json.Decode.list(launchpad, json);
 };
 
 let fetchLaunchPads = () =>
@@ -62,7 +62,7 @@ let fetchLaunchPads = () =>
 
 type action =
   | LoadingLaunchPads
-  | LoadedLaunchedPads(array(launchpad))
+  | LoadedLaunchedPads(list(launchpad))
   | LoadLaunchPadFailed;
 
 let component = ReasonReact.reducerComponent("Launches");
@@ -106,7 +106,7 @@ let make = _children => {
         <ul>
           {
             launchpads
-            |> Array.map(launchpad =>
+            |> List.map(launchpad =>
                  <li key={launchpad.id}>
                    <b> {str(launchpad.full_name)} </b>
                    {str(":")}
@@ -114,6 +114,7 @@ let make = _children => {
                    <Vehicles vehicles={launchpad.vehicles_launched} />
                  </li>
                )
+            |> Array.of_list
             |> ReasonReact.array
           }
         </ul>
